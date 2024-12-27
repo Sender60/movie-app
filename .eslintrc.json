@@ -1,0 +1,15 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": ["airbnb"],
+  "rules": {
+    "linebreak-style": "off",
+    "react/prop-types": "off",
+    "react/function-component-definition": "off",
+    "object-curly-newline": "off",
+    "multiline-ternary": ["error", "never"]
+  }
+}

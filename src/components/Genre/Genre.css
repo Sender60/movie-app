@@ -1,0 +1,7 @@
+.list-item__genre {
+  color: grey;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  margin: 2px;
+  padding: 2px;
+}

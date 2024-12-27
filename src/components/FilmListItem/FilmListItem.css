@@ -1,0 +1,9 @@
+.film-list-item {
+  width: 1000px;
+  border-radius: 10px;
+  border-color: white;
+}
+.list-item__genres {
+  display: flex;
+  flex-wrap: wrap;
+}

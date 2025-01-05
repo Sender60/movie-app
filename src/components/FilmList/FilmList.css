@@ -4,3 +4,25 @@
   justify-content: center;
   gap: 50px;
 }
+
+.film-list__search {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.loader .ant-spin-dot-item {
+  width: 18px;
+  height: 18px;
+}
+
+.loader .ant-spin-dot {
+  font-size: 40px;
+}

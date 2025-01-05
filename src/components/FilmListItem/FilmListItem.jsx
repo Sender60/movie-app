@@ -4,32 +4,18 @@ import { Col, Row, Card, Image } from 'antd';
 import './FilmListItem.css';
 import { format } from 'date-fns';
 import Genre from '../Genre/Genre';
+import StarRating from '../StarRaring/StarRating';
+import maxDescriptionLength from '../utils/util';
 
-const FilmListItem = () => {
-  const maxDescriptionLength = (text) => {
-    if (text.length < 100) {
-      return text;
-    }
-    let truncatedText = '';
-    let currentLength = 0;
-    const words = text.split(' ');
-    words.forEach((word) => {
-      if (currentLength + word.length + 1 < 100) {
-        truncatedText += `${word}`;
-        currentLength += word.length + 1;
-      }
-    });
-    return `${truncatedText.trim()}...`;
-  };
-
-  const date = new Date('2020-03-05');
+const FilmListItem = ({ movie }) => {
+  const { title, overview, poster_path: posterPath, vote_average: rating, release_date: releaseDate } = movie;
 
   const genres = ['Драма', 'Комедия', 'Боевик'];
   return (
     <li key={Math.random()} className="list-item">
       <Card
         style={{
-          width: 400,
+          width: 450,
           padding: 0,
           boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
         }}
@@ -39,20 +25,21 @@ const FilmListItem = () => {
           <Col>
             <Image
               width={200}
-              src="https://www.gamersdecide.com/sites/default/files/authors/u156792/death_speaker_blackthorn.jpg"
+              height={300}
+              src={posterPath === null ? '/img/noposter.jpg' : `https://image.tmdb.org/t/p/w500/${posterPath}`}
+              alt="poster"
             />
           </Col>
           <Col>
-            <h2 className="list-item__title">Movie title</h2>
-            <p className="list-item__date">{format(date, 'MMMM d, yyyy')}</p>
+            <h3 className="list-item__title">{title}</h3>
+            <p className="list-item__date">{releaseDate ? format(new Date(releaseDate), 'MMMM d, yyyy') : 'Дата неизвестна'}</p>
             <div className="list-item__genres">
-              {true && genres.map((genre, index) => <Genre genre={genre} key={index} />)}
+              {genres.map((genre, index) => (
+                <Genre genre={genre} key={index} />
+              ))}
             </div>
-            <p className="list-item__description">
-              {maxDescriptionLength(
-                'Один Два Три Четыре Пять Шесть Семь Восемь девять Десять Один Два Три Четыре Пять Шесть Семь Восвйцвцвцувцувцувцуву',
-              )}
-            </p>
+            <p className="list-item__description">{maxDescriptionLength(overview)}</p>
+            <StarRating rating={rating} />
           </Col>
         </Row>
       </Card>

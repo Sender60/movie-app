@@ -10,6 +10,15 @@
     "react/prop-types": "off",
     "react/function-component-definition": "off",
     "object-curly-newline": "off",
-    "multiline-ternary": ["error", "never"]
+    "multiline-ternary": ["error", "never"],
+    "max-len": [
+      "error",
+      120,
+      {
+        "ignoreComments": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ]
   }
 }

@@ -9,6 +9,7 @@ const FilmList = () => {
   const [movieList, setMovieList] = useState([]);
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const fetchMovieList = async () => {
     if (value !== '') {
@@ -16,15 +17,17 @@ const FilmList = () => {
       try {
         const response = await api(value);
         setMovieList(response.data.results);
-        setLoading(false);
+        setShowAlert(response.data.results.length === 0);
       } catch (error) {
         setMovieList([]);
+        setShowAlert(true);
       } finally {
         setLoading(false);
       }
     } else {
       setMovieList([]);
       setLoading(false);
+      setShowAlert(false);
     }
   };
 
@@ -35,12 +38,17 @@ const FilmList = () => {
     return debouncedSearch.cancel;
   }, [value]);
 
+  const handleChange = (e) => {
+    setValue(e.target.value);
+    if (e.target.value === '') {
+      setShowAlert(false);
+    }
+  };
+
   return (
     <>
-      <Input placeholder="Поиск" className="film-list__search" onChange={(e) => setValue(e.target.value)} />
-      {movieList.length === 0 && loading === false && value !== '' && (
-        <Alert message="Ничего не найдено" type="warning" style={{ width: '80%', margin: '20px auto' }} />
-      )}
+      <Input placeholder="Поиск" className="film-list__search" onChange={(e) => setValue(handleChange(e))} />
+      {showAlert && <Alert message="Ничего не найдено" type="warning" style={{ width: '80%', margin: '20px auto' }} />}
       {movieList.length === 0 && value === '' && <p style={{ textAlign: 'center' }}>Введите название фильма</p>}
       {loading ? (
         <Spin className="loader" />

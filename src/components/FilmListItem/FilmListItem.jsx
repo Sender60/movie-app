@@ -8,11 +8,11 @@ import StarRating from '../StarRaring/StarRating';
 import maxDescriptionLength from '../utils/util';
 
 const FilmListItem = ({ movie }) => {
-  const { title, overview, poster_path: posterPath, vote_average: rating, release_date: releaseDate } = movie;
+  const { id, title, overview, poster_path: posterPath, vote_average: rating, release_date: releaseDate } = movie;
 
   const genres = ['Драма', 'Комедия', 'Боевик'];
   return (
-    <li key={Math.random()} className="list-item">
+    <li key={id} className="list-item">
       <Card
         style={{
           width: 450,

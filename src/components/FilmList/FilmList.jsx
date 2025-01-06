@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Spin, Alert } from 'antd';
+import { Input, Spin, Alert, Pagination } from 'antd';
 import debounce from 'lodash.debounce';
 import FilmListItem from '../FilmListItem/FilmListItem';
 import './FilmList.css';
@@ -10,13 +10,16 @@ const FilmList = () => {
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchMovieList = async () => {
+  const fetchMovieList = async (page = 1) => {
     if (value !== '') {
       setLoading(true);
       try {
-        const response = await api(value);
+        const response = await api(value, page);
         setMovieList(response.data.results);
+        setTotalPages(response.data.total_pages);
         setShowAlert(response.data.results.length === 0);
       } catch (error) {
         setMovieList([]);
@@ -31,9 +34,15 @@ const FilmList = () => {
     }
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchMovieList(page);
+  };
+
   const debouncedSearch = debounce(fetchMovieList, 500);
 
   useEffect(() => {
+    setCurrentPage(1);
     debouncedSearch();
     return debouncedSearch.cancel;
   }, [value]);
@@ -42,14 +51,15 @@ const FilmList = () => {
     setValue(e.target.value);
     if (e.target.value === '') {
       setShowAlert(false);
+      setMovieList([]);
     }
   };
 
   return (
     <>
-      <Input placeholder="Поиск" className="film-list__search" onChange={(e) => setValue(handleChange(e))} />
+      <Input placeholder="Поиск" className="film-list__search" onChange={handleChange} />
       {showAlert && <Alert message="Ничего не найдено" type="warning" style={{ width: '80%', margin: '20px auto' }} />}
-      {movieList.length === 0 && value === '' && <p style={{ textAlign: 'center' }}>Введите название фильма</p>}
+      {value === '' && <p style={{ textAlign: 'center' }}>Введите название фильма</p>}
       {loading ? (
         <Spin className="loader" />
       ) : (
@@ -58,6 +68,16 @@ const FilmList = () => {
             <FilmListItem key={movie.id} movie={movie} />
           ))}
         </ul>
+      )}
+      {movieList.length > 0 && totalPages > 1 && (
+        <Pagination
+          defaultCurrent={1}
+          onChange={handlePageChange}
+          current={currentPage}
+          total={totalPages}
+          align="center"
+          style={{ margin: '20px' }}
+        />
       )}
     </>
   );

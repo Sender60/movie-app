@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Input, Spin, Alert, Pagination } from 'antd';
 import debounce from 'lodash.debounce';
 import FilmListItem from '../FilmListItem/FilmListItem';
 import './FilmList.css';
 import api from '../api/api';
+import { GenresContext } from '../api/genresApi';
 
 const FilmList = () => {
   const [movieList, setMovieList] = useState([]);
@@ -12,6 +13,8 @@ const FilmList = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const genres = useContext(GenresContext);
 
   const fetchMovieList = async (page = 1) => {
     if (value !== '') {
@@ -65,7 +68,7 @@ const FilmList = () => {
       ) : (
         <ul className="film-list">
           {movieList.map((movie) => (
-            <FilmListItem key={movie.id} movie={movie} />
+            <FilmListItem key={movie.id} movie={movie} genres={genres} />
           ))}
         </ul>
       )}

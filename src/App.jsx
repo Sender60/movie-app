@@ -1,13 +1,16 @@
 import React from 'react';
 import FilmList from './components/FilmList/FilmList';
+import { GenresProvider } from './components/api/genresApi';
 
 function App() {
   return (
-    <div className="app">
-      <header className="app-header">
-        <FilmList />
-      </header>
-    </div>
+    <GenresProvider>
+      <div className="app">
+        <header className="app-header">
+          <FilmList />
+        </header>
+      </div>
+    </GenresProvider>
   );
 }
 

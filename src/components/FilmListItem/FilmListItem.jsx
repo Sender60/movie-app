@@ -7,10 +7,26 @@ import Genre from '../Genre/Genre';
 import StarRating from '../StarRaring/StarRating';
 import maxDescriptionLength from '../utils/util';
 
-const FilmListItem = ({ movie }) => {
-  const { id, title, overview, poster_path: posterPath, vote_average: rating, release_date: releaseDate } = movie;
+const FilmListItem = ({ movie, genres }) => {
+  const {
+    id,
+    title,
+    genre_ids: genreIds,
+    overview,
+    poster_path: posterPath,
+    vote_average: rating,
+    release_date: releaseDate,
+  } = movie;
 
-  const genres = ['Драма', 'Комедия', 'Боевик'];
+  const genreNames = genreIds.map((genreId) => genres.find((genre) => genre.id === genreId).name);
+
+  function getRatingColor(ratingMovie) {
+    if (ratingMovie > 7) return '#66E900';
+    if (ratingMovie > 5) return '#E9D100';
+    if (ratingMovie > 3) return '#E97E00';
+    return '#E90000';
+  }
+
   return (
     <li key={id} className="list-item">
       <Card
@@ -31,10 +47,17 @@ const FilmListItem = ({ movie }) => {
             />
           </Col>
           <Col>
-            <h3 className="list-item__title">{title}</h3>
-            <p className="list-item__date">{releaseDate ? format(new Date(releaseDate), 'MMMM d, yyyy') : 'Дата неизвестна'}</p>
+            <div className="list-item__info">
+              <h3 className="list-item__title">{title}</h3>
+              <span className="list-item__rating" style={{ borderColor: getRatingColor(rating) }}>
+                {rating.toFixed(1)}
+              </span>
+            </div>
+            <p className="list-item__date">
+              {releaseDate ? format(new Date(releaseDate), 'MMMM d, yyyy') : 'Дата неизвестна'}
+            </p>
             <div className="list-item__genres">
-              {genres.map((genre, index) => (
+              {genreNames.map((genre, index) => (
                 <Genre genre={genre} key={index} />
               ))}
             </div>

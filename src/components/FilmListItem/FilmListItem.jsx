@@ -3,7 +3,6 @@ import React from 'react';
 import { Col, Row, Card, Image } from 'antd';
 import './FilmListItem.css';
 import { format } from 'date-fns';
-import Genre from '../Genre/Genre';
 import StarRating from '../StarRaring/StarRating';
 import maxDescriptionLength from '../utils/util';
 
@@ -56,9 +55,11 @@ const FilmListItem = ({ movie, genres }) => {
             <p className="list-item__date">
               {releaseDate ? format(new Date(releaseDate), 'MMMM d, yyyy') : 'Дата неизвестна'}
             </p>
-            <div className="list-item__genres">
+            <div className="list-item__genres-wrapper">
               {genreNames.map((genre, index) => (
-                <Genre genre={genre} key={index} />
+                <span className="list-item__genre" key={index}>
+                  {genre}
+                </span>
               ))}
             </div>
             <p className="list-item__description">{maxDescriptionLength(overview)}</p>

@@ -15,12 +15,14 @@ const FilmList = ({ parameter }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
+  const [error404, setError404] = useState(false);
 
   const genres = useContext(GenresContext);
 
   const fetchMovieList = async (page = 1) => {
     if (searchvalue !== '') {
       try {
+        setLoading(true);
         const response = await api(searchvalue, page);
         setSearchMovies(response.data.results);
         setTotalResults(response.data.total_results);
@@ -60,12 +62,21 @@ const FilmList = ({ parameter }) => {
 
   useEffect(() => {
     if (parameter === 'Rated') {
+      setLoading(true);
       getRatedMoviesList().then((movies) => {
+        if (movies.error) {
+          setError404(true);
+          setLoading(false);
+          return;
+        }
+        setLoading(false);
+        setError404(false);
         setRatedMovies(movies.data.results);
         setTotalResults(movies.data.total_results);
       });
     }
     if (parameter === 'Search') {
+      setError404(false);
       fetchMovieList();
       setCurrentPage(1);
     }
@@ -91,11 +102,14 @@ const FilmList = ({ parameter }) => {
       {loading ? (
         <Spin className="loader" />
       ) : (
-        <ul className="film-list">
-          {(parameter === 'Search' ? searchMovies : ratedMovies).map((movie) => (
-            <FilmListItem key={movie.id} movie={movie} genres={genres} />
-          ))}
-        </ul>
+        <>
+          {error404 && <Alert type="info" message="Оценённых фильмов нет" style={{ width: '80%', margin: '20px auto' }} />}
+          <ul className="film-list">
+            {(parameter === 'Search' ? searchMovies : ratedMovies).map((movie) => (
+              <FilmListItem key={movie.id} movie={movie} genres={genres} />
+            ))}
+          </ul>
+        </>
       )}
       {(parameter === 'Search' && searchMovies.length > 0 && totalResults > 1) || (parameter === 'Rated' && ratedMovies.length > 0) ? (
         <Pagination

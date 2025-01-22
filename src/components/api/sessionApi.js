@@ -11,13 +11,17 @@ export const sessionApi = async () => {
 };
 
 const getRatedMovies = async (guestSessionId, page) => {
-  const response = await axios.get(`${BASE_URL}guest_session/${guestSessionId}/rated/movies`, {
-    params: {
-      api_key: API_KEY,
-      page,
-    },
-  });
-  return response;
+  try {
+    const response = await axios.get(`${BASE_URL}guest_session/${guestSessionId}/rated/movies`, {
+      params: {
+        api_key: API_KEY,
+        page,
+      },
+    });
+    return response;
+  } catch (error) {
+    return { error: true };
+  }
 };
 
 const setRatedMovies = async (movieTd, guestSessionId, myRating) => {

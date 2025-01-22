@@ -5,6 +5,7 @@ import './FilmListItem.css';
 import { format } from 'date-fns';
 import StarRating from '../StarRaring/StarRating';
 import maxDescriptionLength from '../utils/util';
+import { setMyRatingMovie } from '../api/sessionApi';
 
 const FilmListItem = ({ movie, genres }) => {
   const {
@@ -13,8 +14,9 @@ const FilmListItem = ({ movie, genres }) => {
     genre_ids: genreIds,
     overview,
     poster_path: posterPath,
-    vote_average: rating,
+    vote_average: averageRating,
     release_date: releaseDate,
+    rating,
   } = movie;
 
   const genreNames = genreIds.map((genreId) => genres.find((genre) => genre.id === genreId).name);
@@ -26,12 +28,15 @@ const FilmListItem = ({ movie, genres }) => {
     return '#E90000';
   }
 
+  function handleRate(value) {
+    setMyRatingMovie(id, value);
+  }
+
   return (
     <li key={id} className="list-item">
       <Card
         style={{
           width: 450,
-          padding: 0,
           boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
         }}
         styles={{ body: { padding: 0 } }}
@@ -45,16 +50,14 @@ const FilmListItem = ({ movie, genres }) => {
               alt="poster"
             />
           </Col>
-          <Col>
+          <Col style={{ width: '100%' }}>
             <div className="list-item__info">
               <h3 className="list-item__title">{title}</h3>
-              <span className="list-item__rating" style={{ borderColor: getRatingColor(rating) }}>
-                {rating.toFixed(1)}
+              <span className="list-item__rating" style={{ borderColor: getRatingColor(averageRating) }}>
+                {averageRating.toFixed(1)}
               </span>
             </div>
-            <p className="list-item__date">
-              {releaseDate ? format(new Date(releaseDate), 'MMMM d, yyyy') : 'Дата неизвестна'}
-            </p>
+            <p className="list-item__date">{releaseDate ? format(new Date(releaseDate), 'MMMM d, yyyy') : 'Дата неизвестна'}</p>
             <div className="list-item__genres-wrapper">
               {genreNames.map((genre, index) => (
                 <span className="list-item__genre" key={index}>
@@ -63,7 +66,7 @@ const FilmListItem = ({ movie, genres }) => {
               ))}
             </div>
             <p className="list-item__description">{maxDescriptionLength(overview)}</p>
-            <StarRating rating={rating} />
+            <StarRating myRating={rating} handleRate={(value) => handleRate(value)} />
           </Col>
         </Row>
       </Card>

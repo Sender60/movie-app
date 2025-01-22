@@ -1,0 +1,22 @@
+.app-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 120px;
+}
+
+.app-menu .ant-tabs-tab-btn {
+  font-size: 20px;
+}
+
+.app-menu-button {
+  border: none;
+  font-size: 18px;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  color: rgb(85, 85, 85);
+  border-bottom: 1px solid rgb(85, 85, 85);
+  padding-bottom: 15px;
+}

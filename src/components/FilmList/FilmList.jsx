@@ -13,7 +13,8 @@ const FilmList = ({ parameter }) => {
   const [searchvalue, setSearchValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchPage, setSearchPage] = useState(1);
+  const [ratedPage, setRatedPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [error404, setError404] = useState(false);
 
@@ -24,7 +25,11 @@ const FilmList = ({ parameter }) => {
       try {
         setLoading(true);
         const response = await api(searchvalue, page);
-        setSearchMovies(response.data.results);
+        const searchMoviewithRatings = response.data.results.map((movie) => {
+          const movieWithRatings = ratedMovies.find((ratedMovie) => ratedMovie.id === movie.id);
+          return movieWithRatings ? { ...movie, rating: movieWithRatings.rating } : movie;
+        });
+        setSearchMovies(searchMoviewithRatings);
         setTotalResults(response.data.total_results);
         setShowAlert(response.data.results.length === 0);
       } catch (error) {
@@ -42,10 +47,11 @@ const FilmList = ({ parameter }) => {
 
   const handlePageChange = (page) => {
     window.scrollTo(0, 0);
-    setCurrentPage(page);
     if (parameter === 'Search') {
       fetchMovieList(page);
+      setSearchPage(page);
     } else {
+      setRatedPage(page);
       getRatedMoviesList(page).then((response) => {
         setRatedMovies(response.data.results);
       });
@@ -55,7 +61,7 @@ const FilmList = ({ parameter }) => {
   const debouncedSearch = debounce(fetchMovieList, 500);
 
   useEffect(() => {
-    setCurrentPage(1);
+    setSearchPage(1);
     debouncedSearch();
     return debouncedSearch.cancel;
   }, [searchvalue]);
@@ -78,7 +84,6 @@ const FilmList = ({ parameter }) => {
     if (parameter === 'Search') {
       setError404(false);
       fetchMovieList();
-      setCurrentPage(1);
     }
   }, [parameter]);
 
@@ -94,7 +99,7 @@ const FilmList = ({ parameter }) => {
     <>
       {parameter === 'Search' && (
         <>
-          <Input placeholder="Поиск" className="film-list__search" onChange={handleChange} />
+          <Input placeholder="Поиск" className="film-list__search" onChange={handleChange} value={searchvalue} />
           {showAlert && <Alert message="Ничего не найдено" type="warning" style={{ width: '80%', margin: '20px auto' }} />}
           {searchvalue === '' && <p style={{ textAlign: 'center' }}>Введите название фильма</p>}
         </>
@@ -111,11 +116,12 @@ const FilmList = ({ parameter }) => {
           </ul>
         </>
       )}
-      {(parameter === 'Search' && searchMovies.length > 0 && totalResults > 1) || (parameter === 'Rated' && ratedMovies.length > 0) ? (
+      {(parameter === 'Search' && searchMovies.length > 0 && totalResults > 1 && loading === false) ||
+      (parameter === 'Rated' && ratedMovies.length > 0 && loading === false) ? (
         <Pagination
           defaultCurrent={1}
           onChange={handlePageChange}
-          current={currentPage}
+          current={parameter === 'Search' ? searchPage : ratedPage}
           defaultPageSize={20}
           total={totalResults}
           align="center"

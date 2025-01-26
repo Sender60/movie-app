@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React from 'react';
+import React, { useState } from 'react';
 import { Col, Row, Card, Image } from 'antd';
 import './FilmListItem.css';
 import { format } from 'date-fns';
@@ -19,6 +19,8 @@ const FilmListItem = ({ movie, genres }) => {
     rating,
   } = movie;
 
+  const [localRating, setLocalRating] = useState(rating);
+
   const genreNames = genreIds.map((genreId) => genres.find((genre) => genre.id === genreId).name);
 
   function getRatingColor(ratingMovie) {
@@ -29,6 +31,7 @@ const FilmListItem = ({ movie, genres }) => {
   }
 
   function handleRate(value) {
+    setLocalRating(value);
     setMyRatingMovie(id, value);
   }
 
@@ -66,7 +69,7 @@ const FilmListItem = ({ movie, genres }) => {
               ))}
             </div>
             <p className="list-item__description">{maxDescriptionLength(overview)}</p>
-            <StarRating myRating={rating} handleRate={(value) => handleRate(value)} />
+            <StarRating myRating={localRating} handleRate={(value) => handleRate(value)} />
           </Col>
         </Row>
       </Card>

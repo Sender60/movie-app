@@ -9,11 +9,11 @@
     "date-fns": "^4.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
+    "lodash.debounce": "^4.0.8",
     "react": "^19.0.0",
     "react-detect-offline": "^2.4.5",
     "react-dom": "^19.0.0",
-    "react-scripts": "5.0.1",
-    "lodash.debounce": "^4.0.8"
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
